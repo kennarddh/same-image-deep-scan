@@ -66,9 +66,14 @@ console.log('Writing output')
 const writeOutputStart = process.hrtime.bigint()
 
 const allImagesFileStream = fs.createWriteStream('./allImages.txt')
+const allImagesJSONFileStream = fs.createWriteStream('./allImages.json')
 const duplicateImagesFileStream = fs.createWriteStream('./duplicateImages.txt')
 
+const imageObj: Record<string, string[]> = {}
+
 for (const [hash, images] of imageMap) {
+	imageObj[hash] = images
+
 	const msg = `${hash}\n${images.join('\n')}\n\n`
 
 	if (images.length > 1) duplicateImagesFileStream.write(msg)
@@ -76,7 +81,10 @@ for (const [hash, images] of imageMap) {
 	allImagesFileStream.write(msg)
 }
 
+allImagesJSONFileStream.write(JSON.stringify(imageObj, null, 4))
+
 allImagesFileStream.end()
+allImagesJSONFileStream.end()
 duplicateImagesFileStream.end()
 
 console.log(`Output written in ${FormatTimeSince(writeOutputStart)}`)

@@ -13,4 +13,16 @@ for await (const imagePath of imageFilesGlob) {
 	images.push(image)
 }
 
-console.log(images)
+const imageMap: Map<string, string[]> = new Map()
+
+for (const image of images) {
+	const hexHash = image.hash.toString('hex')
+
+	if (imageMap.has(hexHash)) {
+		imageMap.get(hexHash)?.push(image.path)
+	} else {
+		imageMap.set(hexHash, [image.path])
+	}
+}
+
+console.log(imageMap)

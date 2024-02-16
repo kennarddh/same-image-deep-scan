@@ -20,7 +20,7 @@ for await (const imagePath of imageFilesGlob) {
 
 console.timeEnd('Creating images done')
 
-console.log(`Found ${images.length}images`)
+console.log(`Found ${images.length} images`)
 
 console.log('Checking duplicates')
 
@@ -44,7 +44,7 @@ console.log(`Found ${imageMap.size} unique images`)
 
 console.log('Writing output')
 
-console.time('Writing output')
+console.time('Writing output done')
 
 const outputFileStream = fs.createWriteStream('./duplicateImages.txt')
 
@@ -54,4 +54,4 @@ for (const [hash, images] of imageMap) {
 
 outputFileStream.end()
 
-console.timeEnd('Writing output')
+console.timeEnd('Writing output done')

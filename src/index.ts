@@ -1,4 +1,16 @@
 import CreateImage from 'CreateImage.js'
+import { IImage } from 'Types.js'
 
-console.log(await CreateImage('./data/image1.jpg'))
-console.log(await CreateImage('./data/image2.jpg'))
+import { Glob } from 'glob'
+
+const images: IImage[] = []
+
+const imageFilesGlob = new Glob('./data/**/*.{png,jpg,jpeg}', {})
+
+for await (const imagePath of imageFilesGlob) {
+	const image = await CreateImage(imagePath)
+
+	images.push(image)
+}
+
+console.log(images)

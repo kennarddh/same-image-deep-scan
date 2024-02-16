@@ -40,7 +40,11 @@ for (const image of images) {
 
 console.timeEnd('Checking duplicates')
 
-console.log(`Found ${imageMap.size} unique images`)
+console.log(
+	`Found ${imageMap.size} unique images and ${
+		images.length - imageMap.size
+	} redundant duplicated images.`
+)
 
 console.log('Writing output')
 

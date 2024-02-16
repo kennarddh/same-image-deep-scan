@@ -4,8 +4,10 @@ import { IImage } from 'Types.js'
 import { Glob } from 'glob'
 
 import fs from 'fs'
+
 const images: IImage[] = []
 
+console.time('Creating files')
 const imageFilesGlob = new Glob('./data/**/*.{png,jpg,jpeg}', {})
 
 for await (const imagePath of imageFilesGlob) {
@@ -13,6 +15,9 @@ for await (const imagePath of imageFilesGlob) {
 
 	images.push(image)
 }
+console.timeEnd('Creating files')
+
+console.time('Checking duplicates')
 
 const imageMap: Map<string, string[]> = new Map()
 
@@ -26,6 +31,10 @@ for (const image of images) {
 	}
 }
 
+console.timeEnd('Checking duplicates')
+
+console.time('Writing output')
+
 const outputFileStream = fs.createWriteStream('./duplicateImages.txt')
 
 for (const [hash, images] of imageMap) {
@@ -33,3 +42,5 @@ for (const [hash, images] of imageMap) {
 }
 
 outputFileStream.end()
+
+console.timeEnd('Writing output')

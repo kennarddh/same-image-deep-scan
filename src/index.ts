@@ -26,8 +26,6 @@ for (const image of images) {
 	}
 }
 
-console.log(imageMap)
-
 const outputFileStream = fs.createWriteStream('./duplicateImages.txt')
 
 for (const [hash, images] of imageMap) {

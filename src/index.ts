@@ -1,22 +1,35 @@
-import CreateImage from 'CreateImage.js'
 import { IImage } from 'Types.js'
 
 import { Glob } from 'glob'
 
 import fs from 'fs'
+import { fileURLToPath } from 'url'
+import path from 'path'
 
-const images: IImage[] = []
+import workerpool, { Promise as WorkerPoolPromise } from 'workerpool'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const pool = workerpool.pool(`${__dirname}/CreateImage.js`, {
+	workerType: 'thread',
+})
 
 console.log('Creating images')
 console.time('Creating images done')
 
 const imageFilesGlob = new Glob('./data/**/*.{png,jpg,jpeg}', {})
 
-for await (const imagePath of imageFilesGlob) {
-	const image = await CreateImage(imagePath)
+const createImagePromises: WorkerPoolPromise<Promise<IImage>>[] = []
 
-	images.push(image)
+for await (const imagePath of imageFilesGlob) {
+	const exec = pool.exec('CreateImage', [imagePath])
+
+	createImagePromises.push(exec)
 }
+
+const images = await Promise.all(createImagePromises)
+
+await pool.terminate()
 
 console.timeEnd('Creating images done')
 

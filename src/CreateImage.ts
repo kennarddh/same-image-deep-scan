@@ -4,6 +4,8 @@ import path from 'node:path'
 
 import xxhash from 'xxhash-addon'
 
+import workerpool from 'workerpool'
+
 const CreateImage = async (pathStr: string): Promise<IImage> => {
 	const absolutePath = path.resolve(pathStr)
 
@@ -19,5 +21,7 @@ const CreateImage = async (pathStr: string): Promise<IImage> => {
 		hash: xxhash.XXHash3.hash(image.bitmap.data),
 	}
 }
+
+workerpool.worker({ CreateImage })
 
 export default CreateImage

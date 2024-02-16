@@ -3,6 +3,7 @@ import { IImage } from 'Types.js'
 
 import { Glob } from 'glob'
 
+import fs from 'fs'
 const images: IImage[] = []
 
 const imageFilesGlob = new Glob('./data/**/*.{png,jpg,jpeg}', {})
@@ -26,3 +27,11 @@ for (const image of images) {
 }
 
 console.log(imageMap)
+
+const outputFileStream = fs.createWriteStream('./duplicateImages.txt')
+
+for (const [hash, images] of imageMap) {
+	outputFileStream.write(`${hash}\n${images.join('\n')}\n\n`)
+}
+
+outputFileStream.end()

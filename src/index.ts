@@ -1,4 +1,5 @@
 import { IImage } from 'Types.js'
+import FormatTimeSince from './FormatTimeSince.js'
 
 import { Glob } from 'glob'
 
@@ -15,7 +16,8 @@ const pool = workerpool.pool(`${__dirname}/CreateImage.js`, {
 })
 
 console.log('Creating images')
-console.time('Creating images done')
+
+const createImageStart = process.hrtime.bigint()
 
 const imageFilesGlob = new Glob('./data/**/*.{png,jpg,jpeg}', {})
 
@@ -31,13 +33,13 @@ const images = await Promise.all(createImagePromises)
 
 await pool.terminate()
 
-console.timeEnd('Creating images done')
+console.log(`Images created in ${FormatTimeSince(createImageStart)}`)
 
 console.log(`Found ${images.length} images`)
 
 console.log('Checking duplicates')
 
-console.time('Checking duplicates')
+const checkDuplicateStart = process.hrtime.bigint()
 
 const imageMap: Map<string, string[]> = new Map()
 
@@ -51,7 +53,7 @@ for (const image of images) {
 	}
 }
 
-console.timeEnd('Checking duplicates')
+console.log(`Duplicates checked in ${FormatTimeSince(checkDuplicateStart)}`)
 
 console.log(
 	`Found ${imageMap.size} unique images and ${
@@ -61,14 +63,20 @@ console.log(
 
 console.log('Writing output')
 
-console.time('Writing output done')
+const writeOutputStart = process.hrtime.bigint()
 
-const outputFileStream = fs.createWriteStream('./duplicateImages.txt')
+const allImagesFileStream = fs.createWriteStream('./allImages.txt')
+const duplicateImagesFileStream = fs.createWriteStream('./duplicateImages.txt')
 
 for (const [hash, images] of imageMap) {
-	outputFileStream.write(`${hash}\n${images.join('\n')}\n\n`)
+	const msg = `${hash}\n${images.join('\n')}\n\n`
+
+	if (images.length > 1) duplicateImagesFileStream.write(msg)
+
+	allImagesFileStream.write(msg)
 }
 
-outputFileStream.end()
+allImagesFileStream.end()
+duplicateImagesFileStream.end()
 
-console.timeEnd('Writing output done')
+console.log(`Output written in ${FormatTimeSince(writeOutputStart)}`)

@@ -2,5 +2,5 @@ export interface IImage {
 	path: string
 	width: number
 	height: number
-	hash: Buffer
+	hash: string
 }

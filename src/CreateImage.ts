@@ -18,7 +18,7 @@ const CreateImage = async (pathStr: string): Promise<IImage> => {
 		path: absolutePath,
 		width,
 		height,
-		hash: xxhash.XXHash3.hash(image.bitmap.data),
+		hash: xxhash.XXHash3.hash(image.bitmap.data).toString('base64'),
 	}
 }
 

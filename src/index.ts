@@ -44,12 +44,12 @@ const checkDuplicateStart = process.hrtime.bigint()
 const imageMap: Map<string, string[]> = new Map()
 
 for (const image of images) {
-	const hexHash = image.hash.toString('hex')
+	const strHash = image.hash.toString('base64')
 
-	if (imageMap.has(hexHash)) {
-		imageMap.get(hexHash)?.push(image.path)
+	if (imageMap.has(strHash)) {
+		imageMap.get(strHash)?.push(image.path)
 	} else {
-		imageMap.set(hexHash, [image.path])
+		imageMap.set(strHash, [image.path])
 	}
 }
 

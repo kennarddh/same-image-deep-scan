@@ -7,7 +7,9 @@ import fs from 'fs'
 
 const images: IImage[] = []
 
-console.time('Creating files')
+console.log('Creating images')
+console.time('Creating images done')
+
 const imageFilesGlob = new Glob('./data/**/*.{png,jpg,jpeg}', {})
 
 for await (const imagePath of imageFilesGlob) {
@@ -15,7 +17,12 @@ for await (const imagePath of imageFilesGlob) {
 
 	images.push(image)
 }
-console.timeEnd('Creating files')
+
+console.timeEnd('Creating images done')
+
+console.log(`Found ${images.length}images`)
+
+console.log('Checking duplicates')
 
 console.time('Checking duplicates')
 
@@ -32,6 +39,10 @@ for (const image of images) {
 }
 
 console.timeEnd('Checking duplicates')
+
+console.log(`Found ${imageMap.size} unique images`)
+
+console.log('Writing output')
 
 console.time('Writing output')
 
